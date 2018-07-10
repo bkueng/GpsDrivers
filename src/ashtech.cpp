@@ -827,7 +827,7 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 		const char port_config[] = "$PASHQ,PRT\r\n";  // ask for the current port configuration
 
 		for (int run = 0; run < 2; ++run) { // try several times
-			write(port_config, sizeof(port_config));
+			write(port_config, sizeof(port_config) - 1);
 
 			if (waitForReply(NMEACommand::PRT, ASH_RESPONSE_TIMEOUT) == 0) {
 				ASH_DEBUG("got port for baudrate %i", baudrate);
@@ -861,7 +861,7 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 		for (int run = 0; run < 10; ++run) {
 			// We ask for the port config again. If we get a reply, we know that the changed settings work.
 			const char port_config[] = "$PASHQ,PRT\r\n";
-			write(port_config, sizeof(port_config));
+			write(port_config, sizeof(port_config) - 1);
 
 			if (waitForReply(NMEACommand::PRT, ASH_RESPONSE_TIMEOUT) == 0) {
 				success = true;
@@ -901,15 +901,18 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 	// get the board identification
 	const char board_identification[] = "$PASHQ,RID\r\n";
 
-	if (write(board_identification, sizeof(board_identification)) == sizeof(board_identification)) {
-		waitForReply(NMEACommand::RID, ASH_RESPONSE_TIMEOUT);
+	if (write(board_identification, sizeof(board_identification) - 1) == sizeof(board_identification) - 1) {
+		if (waitForReply(NMEACommand::RID, ASH_RESPONSE_TIMEOUT) != 0) {
+			ASH_DEBUG("command %s failed", board_identification);
+			return -1;
+		}
 	}
 
 	// Now configure the messages we want
 
 	const char update_rate[] = "$PASHS,POP,20\r\n"; // set internal update rate to 20 Hz
 
-	if (writeAckedCommand(update_rate, sizeof(update_rate), ASH_RESPONSE_TIMEOUT) != 0) {
+	if (writeAckedCommand(update_rate, sizeof(update_rate) - 1, ASH_RESPONSE_TIMEOUT) != 0) {
 		ASH_DEBUG("command %s failed", update_rate);
 		// for some reason we don't get a response here
 	}
@@ -923,14 +926,14 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 		ASH_DEBUG("Enabling DUO mode");
 		const char duo_mode[] = "$PASHS,SNS,DUO,2\r\n";
 
-		if (writeAckedCommand(duo_mode, sizeof(duo_mode), ASH_RESPONSE_TIMEOUT) != 0) {
+		if (writeAckedCommand(duo_mode, sizeof(duo_mode) - 1, ASH_RESPONSE_TIMEOUT) != 0) {
 			ASH_DEBUG("command %s failed", duo_mode);
 		}
 
 	} else {
 		const char solo_mode[] = "$PASHS,SNS,SOL\r\n";
 
-		if (writeAckedCommand(solo_mode, sizeof(solo_mode), ASH_RESPONSE_TIMEOUT) != 0) {
+		if (writeAckedCommand(solo_mode, sizeof(solo_mode) - 1, ASH_RESPONSE_TIMEOUT) != 0) {
 			ASH_DEBUG("command %s failed", solo_mode);
 		}
 	}
@@ -958,9 +961,10 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 	if (use_dual_mode) {
 		// enable heading output
 		const char heading_output[] = "$PASHS,NME,HDT,%c,ON,0.05\r\n";
+		int len = snprintf(buffer, sizeof(buffer), heading_output, _port);
 
-		if (writeAckedCommand(heading_output, sizeof(heading_output), ASH_RESPONSE_TIMEOUT) != 0) {
-			ASH_DEBUG("command %s failed", heading_output);
+		if (writeAckedCommand(buffer, len, ASH_RESPONSE_TIMEOUT) != 0) {
+			ASH_DEBUG("command %s failed", buffer);
 		}
 
 	}
