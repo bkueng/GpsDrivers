@@ -62,7 +62,7 @@
 #define UBX_CLASS_ACK		0x05
 #define UBX_CLASS_CFG		0x06
 #define UBX_CLASS_MON		0x0A
-#define UBX_CLASS_RTCM3	0xF5 /**< Documented p370 of https://www.u-blox.com/sites/default/files/products/documents/u-blox8-M8_ReceiverDescrProtSpec_%28UBX-13003221%29_Public.pdf */
+#define UBX_CLASS_RTCM3	0xF5
 
 /* Message IDs */
 #define UBX_ID_NAV_POSLLH	0x02
@@ -81,15 +81,20 @@
 #define UBX_ID_INF_WARNING 	0x01
 #define UBX_ID_ACK_NAK		0x00
 #define UBX_ID_ACK_ACK		0x01
-#define UBX_ID_CFG_PRT		0x00
-#define UBX_ID_CFG_MSG		0x01
-#define UBX_ID_CFG_RATE		0x08
-#define UBX_ID_CFG_CFG		0x09
-#define UBX_ID_CFG_NAV5		0x24
-#define UBX_ID_CFG_SBAS		0x16
-#define UBX_ID_CFG_TMODE3	0x71
+#define UBX_ID_CFG_PRT		0x00 // deprecated in protocol version >= 27 -> use CFG_VALSET
+#define UBX_ID_CFG_MSG		0x01 // deprecated in protocol version >= 27 -> use CFG_VALSET
+#define UBX_ID_CFG_RATE	0x08 // deprecated in protocol version >= 27 -> use CFG_VALSET
+#define UBX_ID_CFG_CFG		0x09 // deprecated in protocol version >= 27 -> use CFG_VALSET
+#define UBX_ID_CFG_NAV5	0x24 // deprecated in protocol version >= 27 -> use CFG_VALSET
+#define UBX_ID_CFG_SBAS	0x16
+#define UBX_ID_CFG_TMODE3	0x71 // deprecated in protocol version >= 27 -> use CFG_VALSET
+#define UBX_ID_CFG_VALSET	0x8A
+#define UBX_ID_CFG_VALGET	0x8B
+#define UBX_ID_CFG_VALDEL	0x8C
 #define UBX_ID_MON_VER		0x04
-#define UBX_ID_MON_HW		0x09
+#define UBX_ID_MON_HW		0x09 // deprecated in protocol version >= 27 -> use MON_RF
+#define UBX_ID_MON_RF		0x38
+
 /* UBX ID for RTCM3 output messages */
 /* Minimal messages for RTK: 1005, 1077 + (1087 or 1127) */
 /* Reduced message size using MSM4: 1005, 1074 + (1084 or 1124)  */
@@ -98,10 +103,13 @@
 #define UBX_ID_RTCM3_1077	0x4D	/**< GPS MSM7 */
 #define UBX_ID_RTCM3_1084	0x54	/**< GLONASS MSM4 */
 #define UBX_ID_RTCM3_1087	0x57	/**< GLONASS MSM7 */
+#define UBX_ID_RTCM3_1094	0x5E	/**< Galileo MSM4 */
+#define UBX_ID_RTCM3_1097	0x61	/**< Galileo MSM7 */
 #define UBX_ID_RTCM3_1124	0x7C	/**< BeiDou MSM4 */
 #define UBX_ID_RTCM3_1127	0x7F	/**< BeiDou MSM7 */
 #define UBX_ID_RTCM3_1230	0xE6	/**< GLONASS code-phase biases */
 #define UBX_ID_RTCM3_4072	0xFE	/**< Reference station PVT (u-blox proprietary RTCM Message) - Used for moving baseline */
+
 
 /* Message Classes & IDs */
 #define UBX_MSG_NAV_POSLLH	((UBX_CLASS_NAV) | UBX_ID_NAV_POSLLH << 8)
@@ -127,13 +135,19 @@
 #define UBX_MSG_CFG_NAV5	((UBX_CLASS_CFG) | UBX_ID_CFG_NAV5 << 8)
 #define UBX_MSG_CFG_SBAS	((UBX_CLASS_CFG) | UBX_ID_CFG_SBAS << 8)
 #define UBX_MSG_CFG_TMODE3	((UBX_CLASS_CFG) | UBX_ID_CFG_TMODE3 << 8)
+#define UBX_MSG_CFG_VALGET	((UBX_CLASS_CFG) | UBX_ID_CFG_VALGET << 8)
+#define UBX_MSG_CFG_VALSET	((UBX_CLASS_CFG) | UBX_ID_CFG_VALSET << 8)
+#define UBX_MSG_CFG_VALDEL	((UBX_CLASS_CFG) | UBX_ID_CFG_VALDEL << 8)
 #define UBX_MSG_MON_HW		((UBX_CLASS_MON) | UBX_ID_MON_HW << 8)
 #define UBX_MSG_MON_VER		((UBX_CLASS_MON) | UBX_ID_MON_VER << 8)
+#define UBX_MSG_MON_RF		((UBX_CLASS_MON) | UBX_ID_MON_RF << 8)
 #define UBX_MSG_RTCM3_1005	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1005 << 8)
 #define UBX_MSG_RTCM3_1077	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1077 << 8)
 #define UBX_MSG_RTCM3_1087	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1087 << 8)
 #define UBX_MSG_RTCM3_1074	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1074 << 8)
 #define UBX_MSG_RTCM3_1084	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1084 << 8)
+#define UBX_MSG_RTCM3_1094	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1094 << 8)
+#define UBX_MSG_RTCM3_1097	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1097 << 8)
 #define UBX_MSG_RTCM3_1124	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1124 << 8)
 #define UBX_MSG_RTCM3_1127	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1127 << 8)
 #define UBX_MSG_RTCM3_1230	((UBX_CLASS_RTCM3) | UBX_ID_RTCM3_1230 << 8)
@@ -165,14 +179,14 @@
 #define UBX_TX_CFG_PRT_PORTID_SPI	0x04		/**< SPI */
 #define UBX_TX_CFG_PRT_MODE		0x000008D0	/**< 0b0000100011010000: 8N1 */
 #define UBX_TX_CFG_PRT_MODE_SPI	0x00000100
-#define UBX_TX_CFG_PRT_BAUDRATE		38400		/**< choose 38400 as GPS baudrate */
+#define UBX_TX_CFG_PRT_BAUDRATE		115200		/**< choose 115200 as GPS baudrate */
 #define UBX_TX_CFG_PRT_INPROTOMASK_GPS	((1<<5) | 0x01)	/**< RTCM3 in and UBX in */
 #define UBX_TX_CFG_PRT_INPROTOMASK_RTCM	(0x01)	/**< UBX in */
 #define UBX_TX_CFG_PRT_OUTPROTOMASK_GPS	(0x01)			/**< UBX out */
 #define UBX_TX_CFG_PRT_OUTPROTOMASK_RTCM	((1<<5) | 0x01)		/**< RTCM3 out and UBX out */
 
 /* TX CFG-RATE message contents */
-#define UBX_TX_CFG_RATE_MEASINTERVAL	200		/**< 200ms for 5Hz */
+#define UBX_TX_CFG_RATE_MEASINTERVAL	200		/**< 200ms for 5Hz (F9* boards use 10Hz) */
 #define UBX_TX_CFG_RATE_NAVRATE		1		/**< cannot be changed */
 #define UBX_TX_CFG_RATE_TIMEREF		0		/**< 0: UTC, 1: GPS time */
 
@@ -189,6 +203,46 @@
 #define UBX_TX_CFG_TMODE3_FLAGS     	1 	    	/**< start survey-in */
 #define UBX_TX_CFG_TMODE3_SVINMINDUR    (3*60)		/**< survey-in: minimum duration [s] (higher=higher precision) */
 #define UBX_TX_CFG_TMODE3_SVINACCLIMIT  (10000)	/**< survey-in: position accuracy limit 0.1[mm] */
+
+/* Key ID's for CFG-VAL{GET,SET,DEL} */
+#define UBX_CFG_KEY_NAVHPG_DGNSSMODE             0x20140011
+
+#define UBX_CFG_KEY_NAVSPG_FIXMODE               0x20110011
+#define UBX_CFG_KEY_NAVSPG_UTCSTANDARD           0x2011001c
+#define UBX_CFG_KEY_NAVSPG_DYNMODEL              0x20110021
+
+#define UBX_CFG_KEY_ODO_USE_ODO                  0x10220001
+#define UBX_CFG_KEY_ODO_USE_COG                  0x10220002
+#define UBX_CFG_KEY_ODO_OUTLPVEL                 0x10220003
+#define UBX_CFG_KEY_ODO_OUTLPCOG                 0x10220004
+
+#define UBX_CFG_KEY_RATE_MEAS                    0x30210001
+#define UBX_CFG_KEY_RATE_NAV                     0x30210002
+#define UBX_CFG_KEY_RATE_TIMEREF                 0x20210003
+
+#define UBX_CFG_KEY_TMODE_MODE                   0x20030001
+#define UBX_CFG_KEY_TMODE_POS_TYPE               0x20030002
+#define UBX_CFG_KEY_TMODE_LAT                    0x40030009
+#define UBX_CFG_KEY_TMODE_LON                    0x4003000a
+#define UBX_CFG_KEY_TMODE_HEIGHT                 0x4003000b
+#define UBX_CFG_KEY_TMODE_LAT_HP                 0x2003000c
+#define UBX_CFG_KEY_TMODE_LON_HP                 0x2003000d
+#define UBX_CFG_KEY_TMODE_HEIGHT_HP              0x2003000e
+#define UBX_CFG_KEY_TMODE_FIXED_POS_ACC          0x4003000f
+#define UBX_CFG_KEY_TMODE_SVIN_MIN_DUR           0x40030010
+#define UBX_CFG_KEY_TMODE_SVIN_ACC_LIMIT         0x40030011
+
+#define UBX_CFG_KEY_MSGOUT_UBX_NAV_SVIN_I2C      0x20910088
+#define UBX_CFG_KEY_MSGOUT_UBX_NAV_SVINFO_I2C    0x2091000b
+#define UBX_CFG_KEY_MSGOUT_UBX_NAV_DOP_I2C       0x20910038
+#define UBX_CFG_KEY_MSGOUT_UBX_NAV_PVT_I2C       0x20910006
+#define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1005_I2C  0x209102bd
+#define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1077_I2C  0x209102cc
+#define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1087_I2C  0x209102d1
+#define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1097_I2C  0x20910318
+#define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1127_I2C  0x209102d6
+#define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1230_I2C  0x20910303
+
 
 class RTCMParsing;
 
@@ -401,6 +455,32 @@ typedef struct {
 	uint32_t	pullL;
 } ubx_payload_rx_mon_hw_ubx7_t;
 
+/* Rx MON-RF (replaces MON-HW, protocol 27+) */
+typedef struct {
+	uint8_t version;
+	uint8_t nBlocks;         /**< number of RF blocks included */
+	uint8_t reserved1[2];
+
+	struct ubx_payload_rx_mon_rf_block_t {
+		uint8_t blockId;     /**< RF block id */
+		uint8_t flags;       /**< jammingState */
+		uint8_t antStatus;   /**< Status of the antenna superior state machine */
+		uint8_t antPower;    /**< Current power status of antenna */
+		uint32_t postStatus; /**< POST status word */
+		uint8_t reserved2[4];
+		uint16_t noisePerMS; /**< Noise level as measured by the GPS core */
+		uint16_t agcCnt;     /**< AGC Monitor (counts SIGI xor SIGLO, range 0 to 8191 */
+		uint8_t jamInd;      /**< CW jamming indicator, scaled (0=no CW jamming, 255=strong CW jamming) */
+		int8_t ofsI;         /**< Imbalance of I-part of complex signal */
+		uint8_t magI;        /**< Magnitude of I-part of complex signal (0=no signal, 255=max magnitude) */
+		int8_t ofsQ;         /**< Imbalance of Q-part of complex signal */
+		uint8_t magQ;        /**< Magnitude of Q-part of complex signal (0=no signal, 255=max magnitude) */
+		uint8_t reserved3[3];
+	};
+
+	ubx_payload_rx_mon_rf_block_t block[1]; ///< only read out the first block
+} ubx_payload_rx_mon_rf_t;
+
 /* Rx MON-VER Part 1 */
 typedef struct {
 	uint8_t		swVersion[30];
@@ -457,6 +537,18 @@ typedef struct {
 	uint32_t	loadMask;	/**< Load settings */
 	uint8_t		deviceMask; /**< Storage devices to apply this top */
 } ubx_payload_tx_cfg_cfg_t;
+
+/* Tx CFG-VALSET (protocol version 27+) */
+typedef struct {
+	uint8_t     version;	/**< Message version, set to 0 */
+	uint8_t     layers;	/**< The layers where the configuration should be applied (@see UBX_CFG_LAYER_*) */
+	uint8_t     reserved1[2];
+	uint8_t		cfgData;	/**< configuration data (key and value pairs, max 64) */
+} ubx_payload_tx_cfg_valset_t;
+
+#define UBX_CFG_LAYER_RAM (1 << 0)
+#define UBX_CFG_LAYER_BBR (1 << 1)
+#define UBX_CFG_LAYER_FLASH (1 << 2)
 
 /* Tx CFG-NAV5 */
 typedef struct {
@@ -534,6 +626,7 @@ typedef union {
 	ubx_payload_rx_nav_velned_t		payload_rx_nav_velned;
 	ubx_payload_rx_mon_hw_ubx6_t		payload_rx_mon_hw_ubx6;
 	ubx_payload_rx_mon_hw_ubx7_t		payload_rx_mon_hw_ubx7;
+	ubx_payload_rx_mon_rf_t			payload_rx_mon_rf;
 	ubx_payload_rx_mon_ver_part1_t		payload_rx_mon_ver_part1;
 	ubx_payload_rx_mon_ver_part2_t		payload_rx_mon_ver_part2;
 	ubx_payload_rx_ack_ack_t		payload_rx_ack_ack;
@@ -545,6 +638,7 @@ typedef union {
 	ubx_payload_tx_cfg_msg_t		payload_tx_cfg_msg;
 	ubx_payload_tx_cfg_tmode3_t		payload_tx_cfg_tmode3;
 	ubx_payload_tx_cfg_cfg_t		payload_tx_cfg_cfg;
+	ubx_payload_tx_cfg_valset_t		payload_tx_cfg_valset;
 } ubx_buf_t;
 
 #pragma pack(pop)
@@ -605,6 +699,11 @@ private:
 	int restartSurveyIn();
 
 	/**
+	 * restartSurveyIn for protocol version < 27 (_proto_ver_27_or_higher == false)
+	 */
+	int restartSurveyInPreV27();
+
+	/**
 	 * Parse the binary UBX packet
 	 */
 	int parseChar(const uint8_t b);
@@ -643,7 +742,8 @@ private:
 	bool sendMessage(const uint16_t msg, const uint8_t *payload, const uint16_t length);
 
 	/**
-	 * Configure message rate
+	 * Configure message rate.
+	 * Note: this is deprecated with protocol version >= 27
 	 * @return true on success, false on write error
 	 */
 	bool configureMessageRate(const uint16_t msg, const uint8_t rate);
@@ -659,10 +759,50 @@ private:
 	int waitForAck(const uint16_t msg, const unsigned timeout, const bool report);
 
 	/**
-	 * combines the configure_message_rate & wait_for_ack calls
+	 * Combines the configure_message_rate & wait_for_ack calls.
+	 * Note: this is deprecated with protocol version >= 27
 	 * @return true on success
 	 */
 	inline bool configureMessageRateAndAck(uint16_t msg, uint8_t rate, bool report_ack_error = false);
+
+	/**
+	 * Send configuration values and desired message rates
+	 * @return 0 on success, <0 on error
+	 */
+	int configureDevice();
+	/**
+	 * Send configuration values and desired message rates (for protocol version < 27)
+	 * @return 0 on success, <0 on error
+	 */
+	int configureDevicePreV27();
+
+	/**
+	 * Init _buf as CFG-VALSET
+	 * @return size of the message (without any config values)
+	 */
+	int initCfgValset();
+
+	/**
+	 * Add a configuration value to _buf and increase the message size msg_size as needed
+	 * @param key_id one of the UBX_CFG_KEY_* constants
+	 * @param value configuration value
+	 * @param msg_size CFG-VALSET message size: this is an input & output param
+	 * @return true on success, false if buffer too small
+	 */
+	template<typename T>
+	bool cfgValset(uint32_t key_id, T value, int &msg_size);
+
+	/**
+	 * Add a configuration value that is port-specific (MSGOUT messages).
+	 * Note: Key ID must be the one for I2C, and the implementation assumes the
+	 *       Key ID's are in increasing order for the other ports: I2C, UART1, UART2, USB, SPI.
+	 *
+	 * @param key_id I2C key ID
+	 * @param value configuration value
+	 * @param msg_size CFG-VALSET message size: this is an input & output param
+	 * @return true on success, false if buffer too small
+	 */
+	bool cfgValsetPort(uint32_t key_id, uint8_t value, int &msg_size);
 
 	int activateRTCMOutput();
 
@@ -670,6 +810,15 @@ private:
 	 * Calculate FNV1 hash
 	 */
 	uint32_t fnv1_32_str(uint8_t *str, uint32_t hval);
+
+	enum class Board : uint8_t {
+		unknown = 0,
+		u_blox5 = 5,
+		u_blox6 = 6,
+		u_blox7 = 7,
+		u_blox8 = 8, ///< M8N or M8P
+		u_blox9 = 9, ///< F9P
+	};
 
 	struct vehicle_gps_position_s *_gps_position {nullptr};
 	struct satellite_info_s *_satellite_info {nullptr};
@@ -690,11 +839,13 @@ private:
 	ubx_buf_t		_buf{};
 	uint32_t		_ubx_version{0};
 	bool			_use_nav_pvt{false};
+	bool			_proto_ver_27_or_higher{false}; ///< true if protocol version 27 or higher detected
 	OutputMode		_output_mode{OutputMode::GPS};
 
 	RTCMParsing	*_rtcm_parsing{nullptr};
 
 	const Interface		_interface;
+	Board			_board{Board::unknown};
 
 	// ublox Dynamic platform model default 7: airborne with <2g acceleration
 	uint8_t _dyn_model{7};
