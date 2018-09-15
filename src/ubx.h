@@ -173,38 +173,77 @@
 #define UBX_RX_NAV_TIMEUTC_VALID_VALIDUTC	0x04	/**< validUTC (1 = Valid UTC Time) */
 #define UBX_RX_NAV_TIMEUTC_VALID_UTCSTANDARD	0xF0	/**< utcStandard (0..15 = UTC standard identifier) */
 
-/* TX CFG-PRT message contents */
+/* TX CFG-PRT message contents
+ * Note: not used with protocol version 27+ anymore
+ */
 #define UBX_TX_CFG_PRT_PORTID		0x01		/**< UART1 */
 #define UBX_TX_CFG_PRT_PORTID_USB	0x03		/**< USB */
 #define UBX_TX_CFG_PRT_PORTID_SPI	0x04		/**< SPI */
 #define UBX_TX_CFG_PRT_MODE		0x000008D0	/**< 0b0000100011010000: 8N1 */
 #define UBX_TX_CFG_PRT_MODE_SPI	0x00000100
-#define UBX_TX_CFG_PRT_BAUDRATE		115200		/**< choose 115200 as GPS baudrate */
+#define UBX_TX_CFG_PRT_BAUDRATE		38400		/**< choose 38400 as GPS baudrate (pre M8* boards) */
 #define UBX_TX_CFG_PRT_INPROTOMASK_GPS	((1<<5) | 0x01)	/**< RTCM3 in and UBX in */
 #define UBX_TX_CFG_PRT_INPROTOMASK_RTCM	(0x01)	/**< UBX in */
 #define UBX_TX_CFG_PRT_OUTPROTOMASK_GPS	(0x01)			/**< UBX out */
 #define UBX_TX_CFG_PRT_OUTPROTOMASK_RTCM	((1<<5) | 0x01)		/**< RTCM3 out and UBX out */
 
-/* TX CFG-RATE message contents */
+#define UBX_BAUDRATE_M8_AND_NEWER 115200 /**< baudrate for M8+ boards */
+
+/* TX CFG-RATE message contents
+ * Note: not used with protocol version 27+ anymore
+ */
 #define UBX_TX_CFG_RATE_MEASINTERVAL	200		/**< 200ms for 5Hz (F9* boards use 10Hz) */
 #define UBX_TX_CFG_RATE_NAVRATE		1		/**< cannot be changed */
 #define UBX_TX_CFG_RATE_TIMEREF		0		/**< 0: UTC, 1: GPS time */
 
-/* TX CFG-NAV5 message contents */
+/* TX CFG-NAV5 message contents
+ * Note: not used with protocol version 27+ anymore
+ */
 #define UBX_TX_CFG_NAV5_MASK		0x0005		/**< Only update dynamic model and fix mode */
 #define UBX_TX_CFG_NAV5_FIXMODE		2		/**< 1 2D only, 2 3D only, 3 Auto 2D/3D */
 
-/* TX CFG-SBAS message contents */
-#define UBX_TX_CFG_SBAS_MODE_ENABLED	1				/**< SBAS enabled */
-#define UBX_TX_CFG_SBAS_MODE_DISABLED	0				/**< SBAS disabled */
-#define UBX_TX_CFG_SBAS_MODE		UBX_TX_CFG_SBAS_MODE_DISABLED	/**< SBAS enabled or disabled */
-
-/* TX CFG-TMODE3 message contents */
-#define UBX_TX_CFG_TMODE3_FLAGS     	1 	    	/**< start survey-in */
-#define UBX_TX_CFG_TMODE3_SVINMINDUR    (3*60)		/**< survey-in: minimum duration [s] (higher=higher precision) */
-#define UBX_TX_CFG_TMODE3_SVINACCLIMIT  (10000)	/**< survey-in: position accuracy limit 0.1[mm] */
-
 /* Key ID's for CFG-VAL{GET,SET,DEL} */
+#define UBX_CFG_KEY_CFG_UART1_BAUDRATE           0x40520001
+#define UBX_CFG_KEY_CFG_UART1_STOPBITS           0x20520002
+#define UBX_CFG_KEY_CFG_UART1_DATABITS           0x20520003
+#define UBX_CFG_KEY_CFG_UART1_PARITY             0x20520004
+#define UBX_CFG_KEY_CFG_UART1_ENABLED            0x20520005
+#define UBX_CFG_KEY_CFG_UART1_REMAP              0x20520006
+#define UBX_CFG_KEY_CFG_UART1INPROT_UBX          0x10730001
+#define UBX_CFG_KEY_CFG_UART1INPROT_NMEA         0x10730002
+#define UBX_CFG_KEY_CFG_UART1INPROT_RTCM3X       0x10730004
+#define UBX_CFG_KEY_CFG_UART1OUTPROT_UBX         0x10740001
+#define UBX_CFG_KEY_CFG_UART1OUTPROT_NMEA        0x10740002
+#define UBX_CFG_KEY_CFG_UART1OUTPROT_RTCM3X      0x10740004
+
+#define UBX_CFG_KEY_CFG_UART2_BAUDRATE           0x40530001
+#define UBX_CFG_KEY_CFG_UART2_STOPBITS           0x20530002
+#define UBX_CFG_KEY_CFG_UART2_DATABITS           0x20530003
+#define UBX_CFG_KEY_CFG_UART2_PARITY             0x20530004
+#define UBX_CFG_KEY_CFG_UART2_ENABLED            0x20530005
+#define UBX_CFG_KEY_CFG_UART2_REMAP              0x20530006
+#define UBX_CFG_KEY_CFG_UART2INPROT_UBX          0x10750001
+#define UBX_CFG_KEY_CFG_UART2INPROT_NMEA         0x10750002
+#define UBX_CFG_KEY_CFG_UART2INPROT_RTCM3X       0x10750004
+#define UBX_CFG_KEY_CFG_UART2OUTPROT_UBX         0x10760001
+#define UBX_CFG_KEY_CFG_UART2OUTPROT_NMEA        0x10760002
+#define UBX_CFG_KEY_CFG_UART2OUTPROT_RTCM3X      0x10760004
+
+#define UBX_CFG_KEY_CFG_USB_ENABLED              0x10650001
+#define UBX_CFG_KEY_CFG_USBINPROT_UBX            0x10770001
+#define UBX_CFG_KEY_CFG_USBINPROT_NMEA           0x10770002
+#define UBX_CFG_KEY_CFG_USBINPROT_RTCM3X         0x10770004
+#define UBX_CFG_KEY_CFG_USBOUTPROT_UBX           0x10780001
+#define UBX_CFG_KEY_CFG_USBOUTPROT_NMEA          0x10780002
+#define UBX_CFG_KEY_CFG_USBOUTPROT_RTCM3X        0x10780004
+
+#define UBX_CFG_KEY_CFG_SPIINPROT_UBX            0x10790001
+#define UBX_CFG_KEY_CFG_SPIINPROT_NMEA           0x10790002
+#define UBX_CFG_KEY_CFG_SPIINPROT_RTCM3X         0x10790004
+#define UBX_CFG_KEY_CFG_SPIOUTPROT_UBX           0x107a0001
+#define UBX_CFG_KEY_CFG_SPIOUTPROT_NMEA          0x107a0002
+#define UBX_CFG_KEY_CFG_SPIOUTPROT_RTCM3X        0x107a0004
+
 #define UBX_CFG_KEY_NAVHPG_DGNSSMODE             0x20140011
 
 #define UBX_CFG_KEY_NAVSPG_FIXMODE               0x20110011
@@ -242,6 +281,9 @@
 #define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1097_I2C  0x20910318
 #define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1127_I2C  0x209102d6
 #define UBX_CFG_KEY_MSGOUT_RTCM_3X_TYPE1230_I2C  0x20910303
+
+#define UBX_CFG_KEY_SPI_ENABLED                  0x10640006
+#define UBX_CFG_KEY_SPI_MAXFF                    0x20640001
 
 
 class RTCMParsing;

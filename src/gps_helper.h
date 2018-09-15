@@ -42,9 +42,8 @@
 #include <cstdint>
 #include "../../definitions.h"
 
-/* MON_VER from u-blox modules can be ~190 bytes */
 #ifndef GPS_READ_BUFFER_SIZE
-#define GPS_READ_BUFFER_SIZE 250
+#define GPS_READ_BUFFER_SIZE 150 ///< buffer size for the read() call. Messages can be longer than that.
 #endif
 
 enum class GPSCallbackType {
