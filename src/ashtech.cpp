@@ -1068,7 +1068,7 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 	// Enable dual antenna mode (2: both antennas are L1/L2 GNSS capable, flex mode, avoids the need to determine
 	// the baseline length through a prior calibration stage)
 	// Needs to be set before other commands
-	const bool use_dual_mode = output_mode == OutputMode::GPS && _board == AshtechBoard::trimble_mb_two;
+	const bool use_dual_mode = output_mode == OutputMode::GPS && _board == AshtechBoard::trimble_mb_two && false; // TODO
 
 	if (use_dual_mode) {
 		ASH_DEBUG("Enabling DUO mode");
@@ -1127,6 +1127,21 @@ int GPSDriverAshtech::configure(unsigned &baudrate, OutputMode output_mode)
 		const bool active = true;
 		status.flags = (int)valid | ((int)active << 1);
 		surveyInStatus(status);
+	}
+
+	// enable RTX via L-Band
+	const char *rtx_settings[] = {
+		"$PASHS,RTX,SRC,LBN\r\n", // use L-band as source
+		"$PASHS,LBN,USE,RTX,ON\r\n", // track all RTX satellites
+		"$PASHS,RTX,MOD,ON\r\n" // use best available RTX service (OFF disables RTX)
+	};
+
+	for (size_t i = 0; i < sizeof(rtx_settings) / sizeof(rtx_settings[0]); ++i) {
+		write(rtx_settings[i], strlen(rtx_settings[i]));
+
+		if (writeAckedCommand(rtx_settings[i], strlen(rtx_settings[i]), ASH_RESPONSE_TIMEOUT) != 0) {
+			ASH_DEBUG("command %s failed", rtx_settings[i]);
+		}
 	}
 
 	_configure_done = true;
