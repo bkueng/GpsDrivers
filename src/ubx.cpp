@@ -687,6 +687,22 @@ int GPSDriverUBX::configureDevice(const GNSSSystemsMask &gnssSystems)
 		}
 	}
 
+	if (_enable_rawx) {
+		UBX_DEBUG("Enabling RAWX output");
+		cfg_valset_msg_size = initCfgValset();
+		// use 5Hz, with 10Hz we might exceed the uart bandwidth
+		cfgValsetPort(UBX_CFG_KEY_MSGOUT_UBX_RXM_RAWX_I2C, 2, cfg_valset_msg_size);
+		cfgValsetPort(UBX_CFG_KEY_MSGOUT_UBX_RXM_SFRBX_I2C, 2, cfg_valset_msg_size);
+
+		if (!sendMessage(UBX_MSG_CFG_VALSET, (uint8_t *)&_buf, cfg_valset_msg_size)) {
+			return -1;
+		}
+
+		if (waitForAck(UBX_MSG_CFG_VALSET, UBX_CONFIG_TIMEOUT, true) < 0) {
+			return -1;
+		}
+	}
+
 	return 0;
 }
 
@@ -1065,6 +1081,13 @@ GPSDriverUBX::parseChar(const uint8_t b)
 			ret = payloadRxAddMonVer(b);	// add a MON-VER payload byte
 			break;
 
+		case UBX_MSG_RXM_RAWX: // don't add to buffer, these are just logged (and might be large, in the order of 1 kb)
+		case UBX_MSG_RXM_SFRBX:
+			if (++_rx_payload_index >= _rx_payload_length) {
+				ret = 1;	// payload received completely
+			}
+			break;
+
 		default:
 			ret = payloadRxAdd(b);		// add a payload byte
 			break;
@@ -1283,6 +1306,11 @@ GPSDriverUBX::payloadRxInit()
 			_rx_state = UBX_RXMSG_IGNORE;        // ignore if not _configured
 		}
 
+		break;
+
+	case UBX_MSG_RXM_RAWX:
+	case UBX_MSG_RXM_SFRBX:
+		_rx_state = _enable_rawx ? UBX_RXMSG_IGNORE : UBX_RXMSG_DISABLE;
 		break;
 
 	case UBX_MSG_ACK_ACK:

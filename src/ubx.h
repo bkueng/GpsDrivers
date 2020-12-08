@@ -1074,6 +1074,7 @@ private:
 
 	const UBXMode _mode;
 	const float _heading_offset;
+	const bool _enable_rawx{true};
 };
 
 
