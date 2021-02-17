@@ -202,10 +202,10 @@
 #define UBX_TX_CFG_PRT_BAUDRATE                 38400           /**< choose 38400 as GPS baudrate (pre M8* boards only) */
 #define UBX_TX_CFG_PRT_INPROTOMASK_GPS          ((1<<5) | 0x01) /**< RTCM3 in and UBX in */
 #define UBX_TX_CFG_PRT_INPROTOMASK_RTCM         (0x01)          /**< UBX in */
-#define UBX_TX_CFG_PRT_OUTPROTOMASK_GPS         (0x01)          /**< UBX out */
+#define UBX_TX_CFG_PRT_OUTPROTOMASK_GPS         (0x01|(1<<5))          /**< UBX out */
 #define UBX_TX_CFG_PRT_OUTPROTOMASK_RTCM        ((1<<5) | 0x01) /**< RTCM3 out and UBX out */
 
-#define UBX_BAUDRATE_M8_AND_NEWER               115200 /**< baudrate for M8+ boards */
+#define UBX_BAUDRATE_M8_AND_NEWER               230400 /**< baudrate for M8+ boards */
 
 /* TX CFG-RATE message contents
  * Note: not used with protocol version 27+ anymore
